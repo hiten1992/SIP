@@ -1,0 +1,8 @@
+
+sudo apt-get remove  linphone
+
+sudo apt-get remove --auto-remove linphone
+
+sudo apt-get purge linphone
+
+sudo apt-get purge --auto-remove linphone

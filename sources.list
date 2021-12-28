@@ -1,0 +1,10 @@
+#https://www.itzgeek.com/how-tos/linux/debian/setup-debian-11-official-repository-in-sources-list-etc-apt-sources-list.html
+#https://gist.github.com/gustavorv86/d60a25ad5f70b0dfc382670d3dc6da8d
+
+
+
+deb http://deb.debian.org/debian/ bullseye main contrib non-free
+deb http://deb.debian.org/debian/ bullseye-updates main contrib non-free
+deb http://deb.debian.org/debian bullseye-proposed-updates main contrib non-free
+deb http://deb.debian.org/debian-security/ bullseye-security main contrib non-free
+deb http://deb.debian.org/debian/ bullseye-backports main contrib non-free

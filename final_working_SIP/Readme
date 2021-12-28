@@ -1,0 +1,77 @@
+// Create a file asound.conf under /etc
+
+1.  sudo nano /etc/asound.conf 
+
+2.  Paste the content in asound.conf. Then save and exit.
+
+        pcm.!default {
+        type plug
+        slave {
+        pcm "hw:1,0"
+        }
+        }
+        
+        ctl.!default {
+        type hw
+        card 1
+        }
+
+
+
+
+// Steps to run simple_pjsua at boot
+
+1.  Copy the executable "simple_pjsua" from "pjproject-2.11.1/pjsip-apps/bin/samples/x86_64-unknown-linux-gnu"
+    /usr/bin.
+
+2.  Go to /usr/bin using command "cd /usr/bin". 
+    Then, run command "sudo chmod 777 simple_pjsua"
+    
+3.  Go to /etc/systemd/system.
+    Create a file named "pjsua_sip.service" using "sudo nano pjsua_sip.service".
+
+4.  Copy the below content in this file-
+    
+        
+            [Unit]
+
+            Description=Run script at startup after network becomes reachable
+
+            After=network.target
+
+
+            [Service]
+
+            Type=simple
+
+            RemainAfterExit=yes
+
+            ExecStart=sudo nohup /usr/bin/simple_pjsua
+
+            TimeoutStartSec=0
+
+
+            [Install]
+
+            WantedBy=default.target
+    
+4.  Save the file and exit.
+
+5.  Run command "sudo chmod 755 pjsua_sip.service".
+
+6.  Create a symlink so that this servcie can be started on boot using the command-
+
+        "sudo systemctl enable pjsua_sip"
+        
+7.  Check the status of the service using command-
+
+        "sudo systemctl status pjsua_sip"
+        
+8.  Start the service using command-
+
+        "sudo systemctl start pjsua_sip"
+
+9.  Now reboot the box and check the status of the service whether it has started or not.
+    After boot, run command --
+    
+        "sudo systemctl status pjsua_sip"

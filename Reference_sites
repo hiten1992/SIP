@@ -1,0 +1,443 @@
+////////////////////////////////////////// WORKING OF PJSUA ////////////////////////////////////////////////////
+Filename: simple_pjsua.c (To direct changes in this file for credentials such as username, password, etc.)
+
+SIP URL                 -   sip:111@192.168.1.234
+URL of the registrar    -   sip:192.168.1.234
+Auth Realm              -   *
+Username                -   111
+Password                -   guest1
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+sudo adduser (your user name) audio
+
+sudo apt install jackd qjackctl pulseaudio-module-jack
+sudo apt-get install alsa-tools alsa-utils
+sudo apt-get install libasound2-dev
+sudo apt-get install uuid uuid-dev
+sudo apt-get install -y linphone-nogtk
+
+
+pulseaudio --kill
+
+jack_control start
+
+jack_control exit
+
+pulseaudio --start
+
+sudo apt install qjackctl
+
+
+
+++++++++++++++++++++++++++++++++++++
+<< sudo nano /etc/asound.conf >> Create By Own
+++++++++++++++++++++++++++++++++++++
+################################
+pcm.!default {​​
+type plug
+slave {​​
+pcm "hw:1,0"
+}​​
+}​​ctl.!default {​​
+type hw
+card 1
+}​​
+
+
+
+
+
+http://blog.kundansingh.com/2016/07/how-to-make-phone-calls-from-command.html
+https://github.com/pjsip/pjproject/releases/tag/2.10
+https://nickvsnetworking.com/sip-testing-with-sipcmd/
+
+1.  https://www.xuebuyuan.com/1472570.html
+2.  https://www.mankier.com/1/linphonec
+3.  http://manpages.ubuntu.com/manpages/bionic/man1/linphonecsh.1.html
+4.  https://github.com/BelledonneCommunications/liblinphone/issues/157
+5.  https://fossies.org/linux/liblinphone/console/commands.c
+6.  https://askubuntu.com/questions/57810/how-to-fix-no-soundcards-found
+7.  https://forum.armbian.com/topic/11673-how-to-use-a-console-sip-client-on-your-armbian-device-to-send-text-messages-to-a-sip-client-on-your-phone-or-pc/
+8.  https://ixnfo.com/en/the-solution-of-the-error-unable-to-create-channel-of-type-sip-cause-20-subscriber-absent.html
+9.  https://www.oreilly.com/library/view/asterisk-the-future/0596009623/ch04s06.html
+10. https://support.onsip.com/hc/en-us/articles/203738214-Asterisk-Configuration-SIP
+11. https://alter.org.ua/en/docs/linux/linphonec/
+12. https://archive.flossmanuals.net/linphone/ch009_configuring.html
+13.	https://webhamster.ru/mytetrashare/index/mtb0/15519797105od5m9ax7x
+
+///////////////// SIPCMD commands //////////////////////////////////////
+
+// To call
+./sipcmd2 -P sip -u "111" -c "guest1" -w "192.168.1.234" -x "c120;w2000;h"
+
+// To wait for incoming call
+./sipcmd2 -P sip -u "111" -c "guest1" -w "192.168.1.234" -x "lstart;a;lwai;"
+
+// To call
+./sipcmd -P sip -u "111" -c "guest1" -w "192.168.1.234" -x "c120;w2000;h"
+
+// To wait for incoming call
+./sipcmd -P sip -u "111" -c "guest1" -w "192.168.1.234" -x "lstart;a;lwai;"
+////////////////////////////////////////////////////////////////////////
+
+
+////////////////// PJSUA commands //////////////////////////////////////
+
+./pjsua2_demo --id sip:111@192.168.1.234
+./simple_pjsua --id sip:111@192.168.1.234
+
+./pjsua2_demo --id sip:111@192.168.1.234 --registrar sip:192.168.1.234 --username 111 --password guest1
+./pjsua2_demo --id sip:222@192.168.1.234 --registrar sip:192.168.1.234 --username 222 --password guest2
+./simple_pjsua --id sip:111@192.168.1.234 --registrar sip:192.168.1.234 --username 111 --password guest1
+
+
+./pjsua2_demo --id sip:111@192.168.1.234 --registrar sip:192.168.1.234 --realm 192.168.1.234 --username 111 --password guest1 --next-account --id sip:111@192.168.1.234 --registrar sip:192.168.1.234 --realm 192.168.1.234 --username 111 --password guest1
+
+
+
+./simple_pjsua --id sip:111@192.168.1.234 --registrar sip:192.168.1.234 --realm asterisk --username 111 --password guest1
+
+./pjsua2_demo --play-file WAV.wav --auto-answer 200 --auto-play --auto-loop --max-calls 100
+./simple_pjsua --play-file WAV.wav --auto-answer 200 --auto-play --auto-loop --max-calls 100
+
+
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+
+Session Initiation Protocol (SIP)
+=================================
+///////////////////////////
+
+  == Using SIP RTP CoS mark 5
+pbx-01*CLI> 
+pbx-01*CLI> 
+pbx-01*CLI> 
+pbx-01*CLI> 
+pbx-01*CLI> 
+pbx-01*CLI> 
+[Dec 10 18:02:01] WARNING[27497][C-000000af]: channel.c:6560 ast_channel_make_compatible_helper: No path to translate from SIP/120-00000119 to SIP/192.168.1.234-00000118
+[Dec 10 18:02:01] WARNING[27497][C-000000af]: app_dial.c:3178 dial_exec_full: Had to drop call because I couldn't make SIP/192.168.1.234-00000118 compatible with SIP/120-00000119
+  == Spawn extension (public, 120, 1) exited non-zero on 'SIP/192.168.1.234-00000118'
+
+
+///////////////////////////
+
+///////////////////////////////
+
+pbx-01*CLI> 
+  == Spawn extension (public, 120, 1) exited non-zero on 'SIP/111-0000011c'
+  == Using SIP RTP CoS mark 5
+[Dec 10 18:08:17] WARNING[27588][C-000000b2]: app_dial.c:2512 dial_exec_full: Unable to create channel of type 'SIP' (cause 20 - Subscriber absent)
+  == Everyone is busy/congested at this time (1:0/0/1)
+[Dec 10 18:08:17] WARNING[27588][C-000000b2]: app_voicemail.c:6588 leave_voicemail: No entry in voicemail config file for 'u111'
+  == Spawn extension (public, 111, 3) exited non-zero on 'SIP/120-0000011e'
+pbx-01*CLI> 
+
+
+
+///////////////////////////////
+
+
+
+sip show peer                  -- Show details on specific SIP peer
+sip show registry
+
+
+///////////////////////
+
+  == Using SIP RTP CoS mark 5
+[Dec 10 18:02:52] WARNING[27513][C-000000b0]: channel.c:5600 set_format: Unable to find a codec translation path: (slin|gsm|alaw|ulaw) -> (g729)
+[Dec 10 18:02:52] WARNING[27513][C-000000b0]: res_musiconhold.c:373 ast_moh_files_next: Unable to open file '/var/lib/asterisk/moh/macroform-cold_day': No such file or directory
+[Dec 10 18:02:52] WARNING[27513][C-000000b0]: channel.c:5600 set_format: Unable to find a codec translation path: (slin|gsm|alaw|ulaw) -> (g729)
+[Dec 10 18:02:52] WARNING[27513][C-000000b0]: res_musiconhold.c:373 ast_moh_files_next: Unable to open file '/var/lib/asterisk/moh/macroform-robot_dity': No such file or directory
+[Dec 10 18:02:52] WARNING[27513][C-000000b0]: channel.c:5600 set_format: Unable to find a codec translation path: (slin|gsm|alaw|ulaw) -> (g729)
+[Dec 10 18:02:52] WARNING[27513][C-000000b0]: res_musiconhold.c:373 ast_moh_files_next: Unable to open file '/var/lib/asterisk/moh/macroform-the_simplicity': No such file or directory
+[Dec 10 18:02:52] WARNING[27513][C-000000b0]: channel.c:5600 set_format: Unable to find a codec translation path: (slin|gsm|alaw|ulaw) -> (g729)
+[Dec 10 18:02:52] WARNING[27513][C-000000b0]: res_musiconhold.c:373 ast_moh_files_next: Unable to open file '/var/lib/asterisk/moh/manolo_camp-morning_coffee': No such file or directory
+[Dec 10 18:02:52] WARNING[27513][C-000000b0]: channel.c:5600 set_format: Unable to find a codec translation path: (slin|gsm|alaw|ulaw) -> (g729)
+[Dec 10 18:02:52] WARNING[27513][C-000000b0]: res_musiconhold.c:373 ast_moh_files_next: Unable to open file '/var/lib/asterisk/moh/reno_project-system': No such file or directory
+pbx-01*CLI> 
+
+
+///////////////////////
+
+
+
+
+
+/// error -vbash: /dev/null: Permission denied
+
+/// Solution - 
+
+[root@server exim]# ls -la /dev/null
+crw------- 1 root root 1, 3 Sep 21 05:16 /dev/null
+[root@server exim]# chmod 666 /dev/null
+[root@server exim]# ls -la /dev/null
+crw-rw-rw- 1 root root 1, 3 Sep 21 05:16 /dev/null
+
+
+//////////////////////////////////
+
+
+
+InfiNxt#850 - InfiNXTNORT wifi password
+
+///NOTE:
+
+Run linphonec with sudo permission, otherwise you will not hear the ringtone sound
+
+linphone
+linphonec
+linphonecsh
+
+realm=asterisk
+
+register sip:111@192.168.1.234 192.168.1.234 guest1
+
+register sip:111@192.168.1.234 sip:111@192.168.1.234 guest1
+
+register sip:121 sip@192.168.1.234 guest1 -  we are getting user "root" on the screen
+
+
+register sip:111@192.168.1.234 192.168.1.234:5060 guest1
+
+register sip:111@192.168.1.234 guest1
+register sip:121@192.168.1.234 rakeshp
+
+sudo linphonecsh register --host 192.168.1.234 --username 111 --password guest1
+
+
+
+
+call sip:120@192.168.1.234
+
+
+sudo apt-get purge --auto-remove linphone
+
+sudo apt install pulseaudio
+sudo apt install alsa-utils
+sudo apt-get install -y linphone-nogtk
+
+
+
+linphonecsh init  <optional linphonec args>
+linphonecsh exit
+linphonecsh generic  <linphonec command line surrounded by quotes>
+linphonecsh register  --username <username> --host <proxy> --password <password>
+linphonecsh unregister
+linphonecsh dial <sip address or number>
+linphonecsh status <domain = one of 'register', 'hook', 'autoanswer'>
+linphonecsh --help
+
+https://www.alsa-project.org/wiki/Matrix:Module-usb-audio
+
+
+aplay -D front:CARD=Device,DEV=0 -r 8000 /home/infinity/file_example_WAV_1MG.wav
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////// To set volume ///////////////////////////////////////////////////////////////////////
+1. First run the command "amixer" without parameters to get an overview about your controls for the default device.
+2. See the name of the device. I my case, it was "Speaker"
+3. To set the volme, run the command-
+        "amixer set Speaker 10%"
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+cat  ~/.linphonerc
+
+
+////////// TO Start the SIP //////////////
+pulseaudio --start
+linphonerc
+call sip:122@192.168.1.234
+call sip:120@192.168.1.234
+/////////////////////////////////////////
+
+
+
+ortp-error-no such method on filter MSPulseWrite, fid=16394 method index=2
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////// Download packages from https://packages.debian.org/buster/amd64/libsamplerate0/download
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+wget http://ftp.cn.debian.org/debian/pool/main/p/pulseaudio/pulseaudio_12.2-4+deb10u1_amd64.deb
+
+wget http://ftp.cn.debian.org/debian/pool/main/o/orc/liborc-0.4-0_0.4.28-3.1_amd64.deb
+sudo dpkg -i liborc-0.4-0_0.4.28-3.1_amd64.deb
+
+wget http://ftp.cn.debian.org/debian/pool/main/t/tdb/libtdb1_1.3.16-2+b1_amd64.deb
+sudo dpkg -i libtdb1_1.3.16-2+b1_amd64.deb
+
+wget http://ftp.cn.debian.org/debian/pool/main/w/webrtc-audio-processing/libwebrtc-audio-processing1_0.3-1_amd64.deb
+sudo dpkg -i libwebrtc-audio-processing1_0.3-1_amd64.deb
+
+wget http://ftp.cn.debian.org/debian/pool/main/a/alsa-plugins/libasound2-plugins_1.1.8-1_amd64.deb
+wget http://security.debian.org/debian-security/pool/updates/main/f/ffmpeg/libavresample4_4.1.8-0+deb10u1_amd64.deb
+sudo dpkg -i libavresample4_4.1.8-0+deb10u1_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/j/jackd2/libjack-jackd2-0_1.9.12~dfsg-2_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/libs/libsamplerate/libsamplerate0_0.1.9-2_amd64.deb
+sudo dpkg -i libsamplerate0_0.1.9-2_amd64.deb
+sudo dpkg -i libjack-jackd2-0_1.9.12~dfsg-2_amd64.deb
+sudo dpkg -i libasound2-plugins_1.1.8-1_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/p/pulseaudio/pulseaudio-utils_12.2-4+deb10u1_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/p/pulseaudio/libpulsedsp_12.2-4+deb10u1_amd64.deb
+sudo dpkg -i libpulsedsp_12.2-4+deb10u1_amd64.deb
+sudo dpkg -i pulseaudio-utils_12.2-4+deb10u1_amd64.deb
+sudo dpkg -i pulseaudio_12.2-4+deb10u1_amd64.deb
+
+wget http://ftp.cn.debian.org/debian/pool/main/p/pulseaudio/libpulse0_12.2-4+deb10u1_amd64.deb
+sudo dpkg -i libpulse0_12.2-4+deb10u1_amd64.deb
+
+wget http://ftp.cn.debian.org/debian/pool/main/a/alsa-lib/libasound2_1.1.8-1_amd64.deb
+sudo dpkg -i libasound2_1.1.8-1_amd64.deb
+
+wget http://ftp.cn.debian.org/debian/pool/main/p/pavucontrol/pavucontrol_3.0-4_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/a/atk1.0/libatk1.0-0_2.30.0-2_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/g/glibc/libc-bin_2.28-10_amd64.deb
+sudo dpkg -i libc-bin_2.28-10_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/a/atk1.0/libatk1.0-data_2.30.0-2_all.deb
+sudo dpkg -i libatk1.0-data_2.30.0-2_all.deb
+sudo dpkg -i libatk1.0-0_2.30.0-2_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/a/atkmm1.6/libatkmm-1.6-1v5_2.28.0-2_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/g/glibmm2.4/libglibmm-2.4-1v5_2.58.0-2_amd64.deb
+sudo dpkg -i libglibmm-2.4-1v5_2.58.0-2_amd64.deb
+sudo dpkg -i libatkmm-1.6-1v5_2.28.0-2_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/c/cairo/libcairo-gobject2_1.16.0-4+deb10u1_amd64.deb
+sudo dpkg -i libcairo-gobject2_1.16.0-4+deb10u1_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/c/cairomm/libcairomm-1.0-1v5_1.12.2-4_amd64.deb
+sudo dpkg -i libcairomm-1.0-1v5_1.12.2-4_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/libc/libcanberra/libcanberra-gtk3-0_0.30-7_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/libc/libcanberra/libcanberra0_0.30-7_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/libv/libvorbis/libvorbisfile3_1.3.6-2_amd64.deb
+sudo dpkg -i libvorbisfile3_1.3.6-2_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/s/sound-theme-freedesktop/sound-theme-freedesktop_0.8-2_all.deb
+sudo dpkg -i sound-theme-freedesktop_0.8-2_all.deb
+sudo dpkg -i libcanberra0_0.30-7_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/g/gtk+3.0/libgtk-3-0_3.24.5-1_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/a/adwaita-icon-theme/adwaita-icon-theme_3.30.1-1_all.deb
+wget http://ftp.cn.debian.org/debian/pool/main/h/hicolor-icon-theme/hicolor-icon-theme_0.17-2_all.deb
+sudo dpkg -i hicolor-icon-theme_0.17-2_all.deb
+wget http://ftp.cn.debian.org/debian/pool/main/g/gtk+3.0/gtk-update-icon-cache_3.24.5-1_amd64.deb
+sudo dpkg -i gtk-update-icon-cache_3.24.5-1_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/libr/librsvg/librsvg2-common_2.44.10-2.1_amd64.deb
+sudo dpkg -i librsvg2-common_2.44.10-2.1_amd64.deb
+sudo dpkg -i adwaita-icon-theme_3.30.1-1_all.deb
+wget http://ftp.cn.debian.org/debian/pool/main/a/at-spi2-atk/libatk-bridge2.0-0_2.30.0-5_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/a/at-spi2-core/libatspi2.0-0_2.30.0-7_amd64.deb
+sudo dpkg -i libatspi2.0-0_2.30.0-7_amd64.deb
+sudo dpkg -i libatk-bridge2.0-0_2.30.0-5_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/c/colord/libcolord2_1.4.3-4_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/l/lcms2/liblcms2-2_2.9-3_amd64.deb
+sudo dpkg -i liblcms2-2_2.9-3_amd64.deb
+sudo dpkg -i libcolord2_1.4.3-4_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/c/cups/libcups2_2.2.10-6+deb10u4_amd64.deb
+sudo dpkg -i libcups2_2.2.10-6+deb10u4_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/libe/libepoxy/libepoxy0_1.5.3-0.1_amd64.deb
+sudo dpkg -i libepoxy0_1.5.3-0.1_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/j/json-glib/libjson-glib-1.0-0_1.4.4-2_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/j/json-glib/libjson-glib-1.0-common_1.4.4-2_all.deb
+sudo dpkg -i libjson-glib-1.0-common_1.4.4-2_all.deb
+sudo dpkg -i libjson-glib-1.0-0_1.4.4-2_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/libr/librest/librest-0.7-0_0.8.1-1_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/libs/libsoup2.4/libsoup-gnome2.4-1_2.64.2-2_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/libs/libsoup2.4/libsoup2.4-1_2.64.2-2_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/g/glib-networking/glib-networking_2.58.0-2+deb10u2_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/libp/libproxy/libproxy1v5_0.4.15-5+deb10u1_amd64.deb
+sudo dpkg -i libproxy1v5_0.4.15-5+deb10u1_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/g/glib-networking/glib-networking-services_2.58.0-2+deb10u2_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/g/glib-networking/glib-networking-common_2.58.0-2+deb10u2_all.deb
+sudo dpkg -i glib-networking-common_2.58.0-2+deb10u2_all.deb
+sudo dpkg -i glib-networking-services_2.58.0-2+deb10u2_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/g/gsettings-desktop-schemas/gsettings-desktop-schemas_3.28.1-1_all.deb
+wget http://ftp.cn.debian.org/debian/pool/main/d/dconf/dconf-gsettings-backend_0.30.1-2_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/d/dconf/dconf-service_0.30.1-2_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/d/dconf/libdconf1_0.30.1-2_amd64.deb
+sudo dpkg -i libdconf1_0.30.1-2_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/d/dbus/dbus-user-session_1.10.32-0+deb9u1_all.deb
+sudo dpkg -i dbus-user-session_1.10.32-0+deb9u1_all.deb
+sudo dpkg -i dconf-service_0.30.1-2_amd64.deb
+sudo dpkg -i dconf-gsettings-backend_0.30.1-2_amd64.deb
+sudo dpkg -i gsettings-desktop-schemas_3.28.1-1_all.deb
+sudo dpkg -i glib-networking_2.58.0-2+deb10u2_amd64.deb
+sudo dpkg -i libsoup2.4-1_2.64.2-2_amd64.deb
+sudo dpkg -i libsoup-gnome2.4-1_2.64.2-2_amd64.deb
+sudo dpkg -i librest-0.7-0_0.8.1-1_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/w/wayland/libwayland-client0_1.16.0-1_amd64.deb
+sudo dpkg -i libwayland-client0_1.16.0-1_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/w/wayland/libwayland-cursor0_1.16.0-1_amd64.deb
+sudo dpkg -i libwayland-cursor0_1.16.0-1_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/w/wayland/libwayland-egl1_1.16.0-1_amd64.deb
+sudo dpkg -i libwayland-egl1_1.16.0-1_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/libx/libxcomposite/libxcomposite1_0.4.4-2_amd64.deb
+sudo dpkg -i libxcomposite1_0.4.4-2_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/libx/libxcursor/libxcursor1_1.1.15-2_amd64.deb
+sudo dpkg -i libxcursor1_1.1.15-2_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/libx/libxinerama/libxinerama1_1.1.4-2_amd64.deb
+sudo dpkg -i libxinerama1_1.1.4-2_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/libx/libxkbcommon/libxkbcommon0_0.8.2-1_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/x/xkeyboard-config/xkb-data_2.26-2_all.deb
+sudo dpkg -i xkb-data_2.26-2_all.deb
+sudo dpkg -i libxkbcommon0_0.8.2-1_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/libx/libxrandr/libxrandr2_1.5.1-1_amd64.deb
+sudo dpkg -i libxrandr2_1.5.1-1_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/g/gtk+3.0/libgtk-3-common_3.24.5-1_all.deb
+sudo dpkg -i libgtk-3-common_3.24.5-1_all.deb
+sudo dpkg -i libgtk-3-0_3.24.5-1_amd64.deb
+sudo dpkg -i libcanberra-gtk3-0_0.30-7_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/g/gtkmm3.0/libgtkmm-3.0-1v5_3.24.0-2_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/p/pangomm/libpangomm-1.4-1v5_2.42.0-2_amd64.deb
+sudo dpkg -i libpangomm-1.4-1v5_2.42.0-2_amd64.deb
+sudo dpkg -i libgtkmm-3.0-1v5_3.24.0-2_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/p/pulseaudio/libpulse-mainloop-glib0_12.2-4+deb10u1_amd64.deb
+sudo dpkg -i libpulse-mainloop-glib0_12.2-4+deb10u1_amd64.deb
+sudo dpkg -i pavucontrol_3.0-4_amd64.deb
+
+wget http://ftp.cn.debian.org/debian/pool/main/a/alsa-utils/alsa-utils_1.1.8-2_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/a/alsa-lib/libasound2_1.1.8-1_amd64.deb
+wget http://ftp.cn.debian.org/debian/pool/main/a/alsa-lib/libasound2-data_1.2.4-1.1_all.deb
+sudo dpkg -i libasound2-data_1.2.4-1.1_all.deb
+
+wget http://ftp.cn.debian.org/debian/pool/main/g/glibc/libc6_2.28-10_amd64.deb
+sudo dpkg -i libc6_2.28-10_amd64.deb
+
+wget http://ftp.cn.debian.org/debian/pool/main/g/glibc/libc-bin_2.31-13+deb11u2_amd64.deb
+sudo dpkg -i libc-bin_2.31-13+deb11u2_amd64.deb
+
+sudo dpkg -r libasound2_1.2.4-1.1_amd64.deb
+sudo dpkg -i libasound2_1.1.8-1_amd64.deb
+
+sudo dpkg -i alsa-utils_1.1.8-2_amd64.deb
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+Username                   Secret           Accountcode      Def.Context      ACL  Forcerport
+100                        rakesh                            public           No   No
+126                        conf                              public           No   No
+127                        vinay                             public           No   No
+124                        Recp@123                          public           No   No
+125                        pantry                            public           No   No
+122                        atul                              public           No   No
+123                        vidhu                             public           No   No
+120                        guest                             public           No   No
+128                        rmg                               public           No   No
+129                        rakeshp                           public           No   No
+111                        guest1                            public           No   No
+444                        abhijit                           public           No   No
+324                        confpun                           public           No   No
+321                        arunji                            public           No   No
+322                        abhishek                          public           No   No
+323                        raj                               public           No   No
+821                        jayaraman                         public           No   No
+221                        mumbai                            public           No   No
+222                        guest2                            public           No   No
+
